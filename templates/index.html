@@ -2,89 +2,188 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
     <title>werren be buffet</title>
-    <style>
-        .wrap {
-            margin: auto;
-            width: auto;
-            background-color: black;
-            padding: 10px;
-        }
-
-        .mytitle {
-            color: white;
-            width: 1000px;
-            margin: 20px auto;
-            height: 100px;
-            background-color: gray;
-            background-position: center;
-            background-size: cover;
-            border-radius: 10px;
-            text-align: center;
-            padding: 10px;
-        }
-
-        .search {
-            color: black;
-            width: 1000px;
-            margin: 20px auto;
-            height: 100px;
-            background-color: gray;
-            background-position: center;
-            background-size: cover;
-            text-align: center;
-            border-radius: 10px;
-            padding: 10px;
-        }
-
-        .stocklist {
-            color: black;
-            width: 1000px;
-            margin: 20px auto;
-            height: 300px;
-            background-color: white;
-            background-position: center;
-            background-size: cover;
-            border-radius: 10px;
-            text-align: left;
-            padding: 10px;
-        }
-
-        .save-delete-button {
-            width: 100px;
-            position: absolute;
-            right: 300px;
-            background-color: black;
-            text-align: left;
-            padding: 10px;
-        }
-
-        .mystocklist {
-            color: black;
-            width: 1000px;
-            margin: 20px auto;
-            height: 300px;
-            background-color: lightyellow;
-            background-position: center;
-            background-size: cover;
-            border-radius: 10px;
-            text-align: left;
-            padding: 10px;
-        }
-
-        .information {
-            color: black;
-            width: 1000px;
-            margin: 20px auto;
-            height: 300px;
-            background-color: lightblue;
-            border-radius: 10px;
-            padding: 10px;
-        }
-
-    </style>
 </head>
+<style>
+    .wrap {
+        margin: auto;
+        width: auto;
+        background-color: black;
+        padding: 10px;
+    }
+
+    .mytitle {
+        color: white;
+        width: 1000px;
+        margin: 20px auto;
+        height: 100px;
+        background-color: gray;
+        background-position: center;
+        background-size: cover;
+        border-radius: 10px;
+        text-align: center;
+        padding: 10px;
+    }
+
+    .search {
+        color: black;
+        width: 1000px;
+        margin: 20px auto;
+        height: 100px;
+        background-color: gray;
+        background-position: center;
+        background-size: cover;
+        text-align: center;
+        border-radius: 10px;
+        padding: 10px;
+    }
+
+    .stocklist {
+        color: black;
+        width: 1000px;
+        margin: 20px auto;
+        height: 300px;
+        background-color: white;
+        background-position: center;
+        background-size: cover;
+        border-radius: 10px;
+        text-align: left;
+        padding: 10px;
+    }
+
+    .save-delete-button {
+        width: 100px;
+        position: absolute;
+        right: 300px;
+        background-color: black;
+        text-align: left;
+        padding: 10px;
+    }
+
+    .mystocklist {
+        color: black;
+        width: 1000px;
+        margin: 20px auto;
+        height: 300px;
+        background-color: lightyellow;
+        background-position: center;
+        background-size: cover;
+        border-radius: 10px;
+        text-align: left;
+        padding: 10px;
+    }
+
+    .information {
+        color: black;
+        width: 1000px;
+        margin: 20px auto;
+        height: 300px;
+        background-color: lightblue;
+        border-radius: 10px;
+        padding: 10px;
+    }
+
+    .article-box {
+        border: 1px solid black;
+        width: 300px;
+        height: 260px;
+        float: left;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        margin-right: 10px;
+    }
+
+    .article-img {
+        width: 280px;
+        height: 150px;
+        margin: 10px auto;
+        display: block;
+    }
+
+    .article-content {
+        font-size: 10px;
+        width: 280px;
+        height: 150px;
+        margin: auto;
+
+    }
+
+</style>
+
+<script>
+    $(document).ready(function () {
+
+        reloadArticle()
+        showArticles()
+    });
+
+    function reloadArticle() {
+
+        $.ajax({
+            type: "POST",
+            url: "/news",
+            data: {},
+            success: function (response) { // 성공하면
+
+            }
+        })
+    }
+
+    function showArticles() {
+        $.ajax({
+            type: "GET",
+            url: "/news",
+            data: {},
+            success: function (response) {
+                let articles = response['all_articles']
+
+                let title1 = articles[0]['title']
+                let summury1 = articles[0]['summury']
+                let img1 = articles[0]['img']
+                let url1 = articles[0]['url']
+
+                temp_html = `<div class="article-box">
+                                <img class = "article-img"
+                                     src="${img1}"
+                                     alt="Card image cap">
+                                <div class="article-content">
+                                    <a  href="${url1}">${title1}</a>
+                                    <p >${summury1}</p>
+                                </div>
+                            </div>`
+                $('#article-box').append(temp_html)
+
+                let title2 = articles[1]['title']
+                let summury2 = articles[1]['summury']
+                let img2 = articles[1]['img']
+                let url2 = articles[1]['url']
+
+                temp_html = `<div class="article-box">
+                                <img class = "article-img"
+                                     src="${img2}"
+                                     alt="Card image cap">
+                                <div class="article-content">
+                                    <a  href="${url2}">${title2}</a>
+                                    <p >${summury2}</p>
+                                </div>
+                            </div>`
+                $('#article-box').append(temp_html)
+
+            }
+        })
+    }
+
+</script>
+
 <body>
 <div class="wrap">
     <div class="mytitle">
@@ -113,6 +212,7 @@
     </div>
     <div class="information">
         뉴스 및 환율
+        <div class="articles-rate" id="article-box"></div>
     </div>
 </div>
 </body>
