@@ -42,8 +42,11 @@ def show_news():
         if a_tag is not None:
             title = ar.select_one('dl > dd.articleSubject > a').text
             summury = ar.select_one('dl > dd.articleSummary').text.strip()
-            img = ar.select_one('dl > dt > a > img')['src']
             url = 'https://finance.naver.com/' + ar.select_one('dl > dd.articleSubject > a')['href']
+
+            news_url = requests.get(url, headers=headers)
+            soup_article = BeautifulSoup(news_url.text, 'html.parser')
+            img = soup_article.select_one('meta[property="og:image"]')['content']
 
             doc = {'title': title, 'summury': summury, 'img': img, 'url': url}
 
