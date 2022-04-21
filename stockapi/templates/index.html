@@ -130,15 +130,17 @@
                         let mystocks = response['mystocks'];
                         for (let i = 0; i < mystocks.length; i++) {
                             let date = mystocks[i]['Date'];
-                            let name = mystocks[i]['count'];
-                            let price = mystocks[i]['price'];
-                            let change = mystocks[i]['change'];
+                            let name = mystocks[i]['Name'];
+                            let price = mystocks[i]['Price'];
+                            let change = mystocks[i]['Change'];
+                            let range = mystocks[i]['Range'];
 
                             let temp_html = `<tr>
                                                 <th scope="row">${date}</th>
                                                 <td>${name}</td>
                                                 <td>${price}</td>
                                                 <td>${change}</td>
+                                                <td>${range}</td>
                                             </tr>`
                             $('#stock-box').append(temp_html)
                         }
@@ -189,7 +191,7 @@
 <body>
 <div class="wrap">
     <div class="mytitle">
-        <h1>werren be buffet</h1>
+        <h1>Werren be Buffet</h1>
     </div>
     <div class="search">
         <p>
@@ -202,27 +204,29 @@
         <div class="save-delete-button">
             Search Result
             <p>
-                <button type = 'button' onclick="save()" class = 'savebtn' >Save</button>
+                <button type='button' onclick="save()" class='savebtn'>Save</button>
             </p>
             <p>
-                <button type = 'button' onclick="erase()" class = 'deletebtn'>Delete</button>
+                <button type='button' onclick="erase()" class='deletebtn'>Delete</button>
             </p>
         </div>
     </div>
     <div class="mystocklist">
         주식 MYLIST
-         <table class="table">
-        <thead>
-        <tr>
-            <th scope="col">Date</th>
-            <th scope="col">Name</th>
-            <th scope="col">Price of the Day</th>
-            <th scope="col">Change in Price</th>
-        </tr>
-        </thead>
-        <tbody id="stock-box">
-        </tbody>
-    </table>
+        <table class="table" style="width:100%">
+            <thead>
+            <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Name</th>
+                <th scope="col">Price of the Day</th>
+                <th scope="col">Change in Price</th>
+                <th scope="col">%</th>
+            </tr>
+
+            <tbody id="stock-box">
+            </tbody>
+            </thead>
+        </table>
     </div>
     <div class="information">
         뉴스 및 환율

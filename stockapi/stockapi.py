@@ -15,7 +15,7 @@ r = requests.get('https://m.stock.naver.com/api/json/sise/enrollItemListJson.nhn
 stockapi = r.json().get('result').get('itemList')
 
 for i in range(len(stockapi)):
-    stock_date = stockapi[i]['thistime'][0:8]
+    stock_date = stockapi[i]['thistime'][4:12]
     stock_name = stockapi[i]['nm']
     stock_price = stockapi[i]['pcv']
     stock_pchange = stockapi[i]['cv']
@@ -32,7 +32,7 @@ for i in range(len(stockapi)):
     }
     db.stockapi.insert_one(doc)
 
-# ######## SAVE BUTTON ########
+######## SAVE BUTTON ########
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -48,16 +48,16 @@ def poststocks():
     return jsonify({'result': 'success', 'mystocks': mystocks})
 
 
-# ######## DELETE BUTTON #########
-@app.route('/delete', methods=['POST'])
-def btndeletedata():
-    stocks = list(db.stockapi.find({}, {'_id': False}))
-    return jsonify({'result': 'success', 'stocks': stocks})
-
+######### DELETE BUTTON #########
 @app.route('/datadlt', methods=['GET'])
 def deletedata():
     db.stockapi.delete_one({})
-    return jsonify({'msg':'Deleted!'})
+    # return jsonify({'msg':'Deleted!'})
+
+@app.route('/delete', methods=['POST'])
+def btndeletedata():
+    stocks = list(db.stockapi.find_many({}, {'_id': False}))
+    return jsonify({'result': 'success', 'stocks': stocks})
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
