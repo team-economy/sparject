@@ -3,7 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
     <title>Werren be Buffet</title>
+
     <style>
         .wrap {
             margin: auto;
@@ -97,58 +105,30 @@
         }
 
     </style>
-</head>
 
-<script>
-    $(document).ready(function () {
-        savedata()
-        deletedata()
+    <script>
+        $(document).ready(function () {
+             console.log( "document loaded" );
     });
 
-    function savedata() {
-        $.ajax({
-            type: "GET",
-            url: "/svmylist",
-            data: {},
-            success: function(response) {
-                alert(response["damn!"]);
-            }
-        })
-    }
+        function save() {
+            $.ajax({
+                type: "GET",
+                url: "/save",
+                data: {},
+                success: function (response) {
+                    alert(response["please....!"]);
+                }
+            })
 
-    function savemylist() {
-        $.ajax({
-            type: "POST",
-            url: "/svmydb",
-            data: {},
-            success: function (response) {
-                // let
-
-                temp_html
-            }
-        })
-    }
-
-    function deletedb() {
-        $.ajax({
-            type: "POST",
-            url: "/rmdata",
-            data: {},
-            success: function (response) {
-                alert(response["damn!"]);
-            }
-        })
-    }
-
-    function showdata() {
-        $.ajax({
-            type: "GET",
-            url: "/svmylist",
-            data: {},
-            success: function (response) {
-                if (response["result"] == "success") {
-                    let mystocks = response['mystocks'];
-                    for (let i = 0; i < mystocks.length; i++) {
+            $.ajax({
+                type: "POST",
+                url: "/datasave",
+                data: {},
+                success: function (response) {
+                    if (response["result"] == "success") {
+                        let mystocks = response['mystocks'];
+                        for (let i = 0; i < mystocks.length; i++) {
                             let date = mystocks[i]['Date'];
                             let name = mystocks[i]['count'];
                             let price = mystocks[i]['price'];
@@ -160,13 +140,51 @@
                                                 <td>${price}</td>
                                                 <td>${change}</td>
                                             </tr>`
-                            $('#orders-box').append(temp_html)
-                }
+                            $('#stock-box').append(temp_html)
+                        }
                     }
-        })
-    }
+                }
+            })
+        }
 
-</script>
+        function erase() {
+            $.ajax({
+                type: "POST",
+                url: "/delete",
+                data: {},
+                success: function (response) {
+                    alert(response["damn!"]);
+                }
+            })
+
+            $.ajax({
+                type: "GET",
+                url: "/datadlt",
+                data: {},
+                success: function (response) {
+                    if (response["result"] == "success") {
+                        let mystocks = response['mystocks'];
+                        for (let i = 0; i < mystocks.length; i++) {
+                            let date = mystocks[i]['Date'];
+                            let name = mystocks[i]['Name'];
+                            let price = mystocks[i]['Price'];
+                            let change = mystocks[i]['Change'];
+                            let temp_html = `<tr>
+                                                <th scope="row">${date}</th>
+                                                <td>${name}</td>
+                                                <td>${price}</td>
+                                                <td>${change}</td>
+                                            </tr>`
+                            $('#stock-box').append(temp_html)
+                        }
+                    }
+                }
+            })
+        }
+
+
+    </script>
+</head>
 
 <body>
 <div class="wrap">
@@ -181,7 +199,19 @@
         </p>
     </div>
     <div class="stocklist">
-        <table class="table">
+        <div class="save-delete-button">
+            Search Result
+            <p>
+                <button type = 'button' onclick="save()" class = 'savebtn' >Save</button>
+            </p>
+            <p>
+                <button type = 'button' onclick="erase()" class = 'deletebtn'>Delete</button>
+            </p>
+        </div>
+    </div>
+    <div class="mystocklist">
+        주식 MYLIST
+         <table class="table">
         <thead>
         <tr>
             <th scope="col">Date</th>
@@ -190,20 +220,9 @@
             <th scope="col">Change in Price</th>
         </tr>
         </thead>
-        <tbody id="orders-box">
+        <tbody id="stock-box">
         </tbody>
     </table>
-        <div class="save-delete-button">
-            <p>
-                <button type = 'button' onclick="save()" class = 'savebtn' >Save</button>
-            </p>
-            <p>
-                <button type = 'button' onclick="remove()" class = 'deletebtn'>Delete</button>
-            </p>
-        </div>
-    </div>
-    <div class="mystocklist">
-        주식 MYLIST
     </div>
     <div class="information">
         뉴스 및 환율
@@ -211,52 +230,3 @@
 </div>
 </body>
 </html>
-
-<!--    <script>-->
-<!--        $(document).ready(function () {-->
-<!--            $('#cards-box').empty()-->
-<!--            listing();-->
-<!--        });-->
-
-<!--        function listing() {-->
-<!--             $.ajax({-->
-<!--          type: "GET",-->
-<!--          url: "http://spartacodingclub.shop/post",-->
-<!--          data: {},-->
-<!--          success:function(response) {-->
-<!--              let rows = response['articles']-->
-<!--              for (let i = 0; i < rows.length; i++) {-->
-<!--                  let comment = rows[i]['comment']-->
-<!--                  let desc = rows[i]['desc']-->
-<!--                  let image = rows[i]['image']-->
-<!--                  let title = rows[i]['title']-->
-<!--                  let url = rows[i]['url']-->
-
-<!--                  let temp_html = `<div class="card">-->
-<!--                                        <img class="card-img-top"-->
-<!--                                             src="${image}"-->
-<!--                                             alt="Card image cap">-->
-<!--                                        <div class="card-body">-->
-<!--                                            <a href="${url}" class = "card-title">${title}</a>-->
-<!--                                            <p class="card-text">${desc}</p>-->
-<!--                                            <p class="card-text comment">${comment}</p>-->
-<!--                                        </div>-->
-<!--                                    </div>`-->
-<!--                        $('#cards-box').append(temp_html)-->
-<!--              }-->
-<!--          }-->
-<!--      })-->
-<!--        }-->
-
-<!--        function openclose() {-->
-<!--            let status = $('#post-box').css('display')-->
-<!--            if (status == 'block') {-->
-<!--                $('#post-box').hide();-->
-<!--                $('#btn-posting-box').text('포스팅박스 열기');-->
-<!--            } else {-->
-<!--                $('#post-box').show();-->
-<!--                $('#btn-posting-box').text('포스팅박스 닫기');-->
-<!--            }-->
-<!--        }-->
-
-<!--    </script>-->

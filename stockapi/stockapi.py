@@ -1,11 +1,12 @@
-from flask import Flask, render_template, jsonify
-app = Flask(__name__)
-import requests
+from flask import Flask, render_template, jsonify, request
 from pymongo import MongoClient
+import requests
+app = Flask(__name__)
 
 client = MongoClient('localhost', 27017)
 db = client.dbsparject
-stockdb = db.stockapi
+
+db.stockapi.delete_many({})
 
 #NEED TO BRING DATA FROM SEARCH RESULT !!  search_results = [] !!
 
@@ -20,8 +21,6 @@ for i in range(len(stockapi)):
     stock_pchange = stockapi[i]['cv']
     stock_rate = stockapi[i]['cr']
 
-    print(stock_date, stock_name, stock_price, stock_rate)
-
     doc = {
         'No.': i,
         'Date': stock_date,
@@ -31,34 +30,34 @@ for i in range(len(stockapi)):
         'Range': stock_rate
 
     }
-    db.stockapi.sort(-1)
     db.stockapi.insert_one(doc)
 
-    print(doc)
+# ######## SAVE BUTTON ########
+@app.route('/')
+def home():
+    return render_template('index.html')
 
-# SAVE BUTTON #
-# @app.route('/')
-# def home():
-#     return render_template('index.html')
+@app.route('/save', methods=['GET'])
+def savestocks():
+    stocks = list(db.stockapi.find({'Name':'NAVER'}, {'_id': False}).sort(-1))
+    return jsonify({'result': 'success', 'stocks': stocks})
 
-# @app.route('/stockdata', method=['GET'])
-# def savedata():
-#     stockapi = list(db.stockapi.find({}, {'_id': False}))
-#     return stockapi.find_one()
-#
+@app.route('/datasave', methods=['POST'])
+def poststocks():
+    mystocks = list(db.stockapi.find({'Name':'NAVER'}, {'_id': False}))
+    return jsonify({'result': 'success', 'mystocks': mystocks})
 
-######## DELETE BUTTON #########
 
-@app.route('/dltdb', methods=['POST'])
-def deletedb():
+# ######## DELETE BUTTON #########
+@app.route('/delete', methods=['POST'])
+def btndeletedata():
+    stocks = list(db.stockapi.find({}, {'_id': False}))
+    return jsonify({'result': 'success', 'stocks': stocks})
+
+@app.route('/datadlt', methods=['GET'])
+def deletedata():
     db.stockapi.delete_one({})
     return jsonify({'msg':'Deleted!'})
-
-@app.route('/dltdata', method=['GET'])
-def showdata():
-    mylist = list(db.stockapi.find({}, {'_id': False}))
-    return mylist.find_one()
-
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
