@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Werren be Buffet</title>
+    <style>
+        .wrap {
+            margin: auto;
+            width: auto;
+            background-color: black;
+            padding: 10px;
+        }
+
+        .mytitle {
+            color: white;
+            width: 1000px;
+            margin: 20px auto;
+            height: 100px;
+            background-color: gray;
+            background-position: center;
+            background-size: cover;
+            border-radius: 10px;
+            text-align: center;
+            padding: 10px;
+        }
+
+        .search {
+            color: black;
+            width: 1000px;
+            margin: 20px auto;
+            height: 100px;
+            background-color: gray;
+            background-position: center;
+            background-size: cover;
+            text-align: center;
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+        .stocklist {
+            color: black;
+            width: 1000px;
+            margin: 20px auto;
+            height: 300px;
+            background-color: white;
+            background-position: center;
+            background-size: cover;
+            border-radius: 10px;
+            text-align: left;
+            padding: 10px;
+        }
+
+        .save-delete-button {
+            width: 300px;
+            height: 250px;
+            position: absolute;
+            right: 300px;
+            background-color: black;
+            text-align: left;
+            padding: 10px;
+        }
+
+        .savebtn {
+            width: 100px;
+            height: 130px;
+            right: 300px;
+        }
+
+        .deletebtn {
+            width: 100px;
+            height: 130px;
+            right: 300px;
+        }
+
+        .mystocklist {
+            color: black;
+            width: 1000px;
+            margin: 20px auto;
+            height: 300px;
+            background-color: lightyellow;
+            background-position: center;
+            background-size: cover;
+            border-radius: 10px;
+            text-align: left;
+            padding: 10px;
+        }
+
+        .information {
+            color: black;
+            width: 1000px;
+            margin: 20px auto;
+            height: 300px;
+            background-color: lightblue;
+            border-radius: 10px;
+            padding: 10px;
+        }
+
+    </style>
+</head>
+
+<script>
+    $(document).ready(function () {
+        savedata()
+        deletedata()
+    });
+
+    function savedata() {
+        $.ajax({
+            type: "GET",
+            url: "/svmylist",
+            data: {},
+            success: function(response) {
+                alert(response["damn!"]);
+            }
+        })
+    }
+
+    function savemylist() {
+        $.ajax({
+            type: "POST",
+            url: "/svmydb",
+            data: {},
+            success: function (response) {
+                // let
+
+                temp_html
+            }
+        })
+    }
+
+    function deletedb() {
+        $.ajax({
+            type: "POST",
+            url: "/rmdata",
+            data: {},
+            success: function (response) {
+                alert(response["damn!"]);
+            }
+        })
+    }
+
+    function showdata() {
+        $.ajax({
+            type: "GET",
+            url: "/svmylist",
+            data: {},
+            success: function (response) {
+                if (response["result"] == "success") {
+                    let mystocks = response['mystocks'];
+                    for (let i = 0; i < mystocks.length; i++) {
+                            let date = mystocks[i]['Date'];
+                            let name = mystocks[i]['count'];
+                            let price = mystocks[i]['price'];
+                            let change = mystocks[i]['change'];
+
+                            let temp_html = `<tr>
+                                                <th scope="row">${date}</th>
+                                                <td>${name}</td>
+                                                <td>${price}</td>
+                                                <td>${change}</td>
+                                            </tr>`
+                            $('#orders-box').append(temp_html)
+                }
+                    }
+        })
+    }
+
+</script>
+
+<body>
+<div class="wrap">
+    <div class="mytitle">
+        <h1>werren be buffet</h1>
+    </div>
+    <div class="search">
+        <p>
+            <label for="site-search">Search the site:</label>
+            <input type="search" id="site-search" name="q">
+            <button>Search</button>
+        </p>
+    </div>
+    <div class="stocklist">
+        <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Name</th>
+            <th scope="col">Price of the Day</th>
+            <th scope="col">Change in Price</th>
+        </tr>
+        </thead>
+        <tbody id="orders-box">
+        </tbody>
+    </table>
+        <div class="save-delete-button">
+            <p>
+                <button type = 'button' onclick="save()" class = 'savebtn' >Save</button>
+            </p>
+            <p>
+                <button type = 'button' onclick="remove()" class = 'deletebtn'>Delete</button>
+            </p>
+        </div>
+    </div>
+    <div class="mystocklist">
+        주식 MYLIST
+    </div>
+    <div class="information">
+        뉴스 및 환율
+    </div>
+</div>
+</body>
+</html>
+
+<!--    <script>-->
+<!--        $(document).ready(function () {-->
+<!--            $('#cards-box').empty()-->
+<!--            listing();-->
+<!--        });-->
+
+<!--        function listing() {-->
+<!--             $.ajax({-->
+<!--          type: "GET",-->
+<!--          url: "http://spartacodingclub.shop/post",-->
+<!--          data: {},-->
+<!--          success:function(response) {-->
+<!--              let rows = response['articles']-->
+<!--              for (let i = 0; i < rows.length; i++) {-->
+<!--                  let comment = rows[i]['comment']-->
+<!--                  let desc = rows[i]['desc']-->
+<!--                  let image = rows[i]['image']-->
+<!--                  let title = rows[i]['title']-->
+<!--                  let url = rows[i]['url']-->
+
+<!--                  let temp_html = `<div class="card">-->
+<!--                                        <img class="card-img-top"-->
+<!--                                             src="${image}"-->
+<!--                                             alt="Card image cap">-->
+<!--                                        <div class="card-body">-->
+<!--                                            <a href="${url}" class = "card-title">${title}</a>-->
+<!--                                            <p class="card-text">${desc}</p>-->
+<!--                                            <p class="card-text comment">${comment}</p>-->
+<!--                                        </div>-->
+<!--                                    </div>`-->
+<!--                        $('#cards-box').append(temp_html)-->
+<!--              }-->
+<!--          }-->
+<!--      })-->
+<!--        }-->
+
+<!--        function openclose() {-->
+<!--            let status = $('#post-box').css('display')-->
+<!--            if (status == 'block') {-->
+<!--                $('#post-box').hide();-->
+<!--                $('#btn-posting-box').text('포스팅박스 열기');-->
+<!--            } else {-->
+<!--                $('#post-box').show();-->
+<!--                $('#btn-posting-box').text('포스팅박스 닫기');-->
+<!--            }-->
+<!--        }-->
+
+<!--    </script>-->
