@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
@@ -12,88 +12,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
             integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
             crossorigin="anonymous"></script>
-    <title>werren be buffet</title>
-
-    <style>
-        .wrap {
-            margin: auto;
-            width: auto;
-            background-color: black;
-            padding: 10px;
-        }
-
-        .mytitle {
-            color: white;
-            width: 1000px;
-            margin: 20px auto;
-            height: 100px;
-            background-color: gray;
-            background-position: center;
-            background-size: cover;
-            border-radius: 10px;
-            text-align: center;
-            padding: 10px;
-        }
-
-        .search {
-            color: black;
-            width: 1000px;
-            margin: 20px auto;
-            height: 100px;
-            background-color: gray;
-            background-position: center;
-            background-size: cover;
-            text-align: center;
-            border-radius: 10px;
-            padding: 10px;
-        }
-
-        .stocklist {
-            color: black;
-            width: 1000px;
-            margin: 20px auto;
-            height: 300px;
-            background-color: white;
-            background-position: center;
-            background-size: cover;
-            border-radius: 10px;
-            text-align: left;
-            padding: 10px;
-        }
-
-        .save-delete-button {
-            width: 100px;
-            position: absolute;
-            right: 300px;
-            background-color: black;
-            text-align: left;
-            padding: 10px;
-        }
-
-        .mystocklist {
-            color: black;
-            width: 1000px;
-            margin: 20px auto;
-            height: 300px;
-            background-color: lightyellow;
-            background-position: center;
-            background-size: cover;
-            border-radius: 10px;
-            text-align: left;
-            padding: 10px;
-        }
-
-        .information {
-            color: black;
-            width: 1000px;
-            margin: 20px auto;
-            height: 300px;
-            background-color: lightblue;
-            border-radius: 10px;
-            padding: 10px;
-        }
-
-    </style>
+    <title>Werren be Buffet</title>
 
 </head>
 <style>
@@ -130,26 +49,49 @@
         padding: 10px;
     }
 
-    .stocklist {
+    .result-button {
         color: black;
         width: 1000px;
-        margin: 20px auto;
         height: 300px;
         background-color: white;
-        background-position: center;
-        background-size: cover;
         border-radius: 10px;
-        text-align: left;
+        padding: 10px;
+        margin: auto;
+    }
+
+    .stocklist {
+        float: left;
+        width: 830px;
+        color: black;
+        margin-right: 0px;
+        height: 280px;
+        /*background-position: center;*/
+        /*text-align: left;*/
         padding: 10px;
     }
 
     .save-delete-button {
+        float: right;
         width: 100px;
-        position: absolute;
+        height: 300px;
+        padding-bottom: 10px;
+        padding-right: 10px;
+        margin: auto;
+
+    }
+
+    .savebtn {
+        margin-top: 10px;
+        width: 100px;
+        height: 130px;
         right: 300px;
-        background-color: black;
-        text-align: left;
-        padding: 10px;
+    }
+
+    .deletebtn {
+        margin-top: 10px;
+        width: 100px;
+        height: 130px;
+        right: 300px;
     }
 
     .mystocklist {
@@ -204,12 +146,98 @@
 
 <script>
     $(document).ready(function () {
-
+        console.log("document loaded");
         reloadArticle()
+        reloadStock()
         showArticles()
     });
 
+    function save() {
+        $.ajax({
+            type: "GET",
+            url: "/save",
+            data: {},
+            success: function (response) {
+                alert(response["please....!"]);
+            }
+        })
+
+        $.ajax({
+            type: "POST",
+            url: "/datasave",
+            data: {},
+            success: function (response) {
+                if (response["result"] == "success") {
+                    let mystocks = response['mystocks'];
+                    for (let i = 0; i < mystocks.length; i++) {
+                        let date = mystocks[i]['Date'];
+                        let name = mystocks[i]['Name'];
+                        let price = mystocks[i]['Price'];
+                        let change = mystocks[i]['Change'];
+                        let range = mystocks[i]['Range'];
+
+                        let temp_html = `<tr>
+                                                <th scope="row">${date}</th>
+                                                <td>${name}</td>
+                                                <td>${price}</td>
+                                                <td>${change}</td>
+                                                <td>${range}</td>
+                                            </tr>`
+                        $('#stock-box').append(temp_html)
+                    }
+                }
+            }
+        })
+    }
+
+    function erase() {
+        $.ajax({
+            type: "POST",
+            url: "/delete",
+            data: {},
+            success: function (response) {
+                alert(response["damn!"]);
+            }
+        })
+
+        $.ajax({
+            type: "GET",
+            url: "/datadlt",
+            data: {},
+            success: function (response) {
+                if (response["result"] == "success") {
+                    let mystocks = response['mystocks'];
+                    for (let i = 0; i < mystocks.length; i++) {
+                        let date = mystocks[i]['Date'];
+                        let name = mystocks[i]['Name'];
+                        let price = mystocks[i]['Price'];
+                        let change = mystocks[i]['Change'];
+                        let temp_html = `<tr>
+                                                <th scope="row">${date}</th>
+                                                <td>${name}</td>
+                                                <td>${price}</td>
+                                                <td>${change}</td>
+                                            </tr>`
+                        $('#stock-box').append(temp_html)
+                    }
+                }
+            }
+        })
+    }
+
     function reloadArticle() {
+
+        $.ajax({
+            type: "POST",
+            url: "/stockReload",
+            data: {},
+            success: function (response) { // 성공하면
+
+            }
+        })
+    }
+
+    function reloadStock() {
 
         $.ajax({
             type: "POST",
@@ -270,7 +298,7 @@
 <body>
 <div class="wrap">
     <div class="mytitle">
-        <h1>werren be buffet</h1>
+        <h1>Werren be Buffet</h1>
     </div>
     <div class="search">
         <p>
@@ -279,19 +307,38 @@
             <button>Search</button>
         </p>
     </div>
-    <div class="stocklist">
-        주식 LIST
+    <div class="result-button">
+
+        <div class="stocklist">
+            Search Result
+
+        </div>
         <div class="save-delete-button">
-            <p>
-                <button>Save</button>
-            </p>
-            <p>
-                <button>Delete</button>
-            </p>
+
+            <div class="savebtn">
+                <button type='button' onclick="save()" class='savebtn'>Save</button>
+            </div>
+            <div class="deletebtn">
+                <button type='button' onclick="erase()" class='deletebtn'>Delete</button>
+            </div>
         </div>
     </div>
     <div class="mystocklist">
         주식 MYLIST
+        <table class="table" style="width:100%">
+            <thead>
+            <tr>
+                <th scope="col">Date</th>
+                <th scope="col">Name</th>
+                <th scope="col">Price of the Day</th>
+                <th scope="col">Change in Price</th>
+                <th scope="col">%</th>
+            </tr>
+
+            <tbody id="stock-box">
+            </tbody>
+            </thead>
+        </table>
     </div>
     <div class="information">
         뉴스 및 환율
