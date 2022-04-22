@@ -10,6 +10,8 @@
     - html 기본구조  
       - 김선미
 - Backend
+    - 주식 종목 검색
+       - 김선미 
     - 뉴스 crawling
       - 박철진
     - 환율정보 crawling
