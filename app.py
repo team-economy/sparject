@@ -10,12 +10,19 @@ from pymongo import MongoClient
 client = MongoClient('localhost', 27017)
 db = client.dbsparject
 
-
-######## SAVE BUTTON ########
 @app.route('/')
 def home():
     return render_template('index.html')
 
+######## SEARCH BUTTON ########
+@app.route('/search', methods=['POST'])
+def saving():
+    name_receive = request.form['name_give']
+    print(name_receive)
+    search_result = list(db.stockapi.find({'Name':name_receive},{'_id':False}))
+    return jsonify({'result':search_result})
+
+######## STOCK DB RELOAD ########
 @app.route('/stockReload', methods=['POST'])
 def stockReload():
     db.stockapi.delete_many({})
@@ -48,6 +55,8 @@ def stockReload():
 
     return jsonify({'msg':'뉴스 최신화'})
 
+
+######## SAVE BUTTON ########
 @app.route('/save', methods=['GET'])
 def savestocks():
     stocks = list(db.stockapi.find({'Name':'NAVER'}, {'_id': False}).sort(-1))
@@ -57,6 +66,7 @@ def savestocks():
 def poststocks():
     mystocks = list(db.stockapi.find({'Name':'NAVER'}, {'_id': False}))
     return jsonify({'result': 'success', 'mystocks': mystocks})
+
 
 
 ######### DELETE BUTTON #########
@@ -70,6 +80,8 @@ def btndeletedata():
     stocks = list(db.stockapi.find_many({}, {'_id': False}))
     return jsonify({'result': 'success', 'stocks': stocks})
 
+
+######### NAVER NEWS CRAWLING #########
 @app.route('/news', methods=['GET'])
 def listing():
     articles = list(db.news.find({}, {'_id': False}))

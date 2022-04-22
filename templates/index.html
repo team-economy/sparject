@@ -16,106 +16,107 @@
 
 </head>
 <style>
-    .wrap {
-        margin: auto;
-        width: auto;
-        background-color: black;
-        padding: 10px;
-    }
+        .wrap {
+            /*margin: auto;*/
+            width: auto;
+            background-color: black;
+            padding: 10px;
+        }
 
-    .mytitle {
-        color: white;
-        width: 1000px;
-        margin: 20px auto;
-        height: 100px;
-        background-color: gray;
-        background-position: center;
-        background-size: cover;
-        border-radius: 10px;
-        text-align: center;
-        padding: 10px;
-    }
+        .mytitle {
+            color: white;
+            width: 1000px;
+            margin: 20px auto;
+            height: 100px;
+            background-color: gray;
+            background-position: center;
+            background-size: cover;
+            border-radius: 10px;
+            text-align: center;
+            padding: 10px;
+        }
 
-    .search {
-        color: black;
-        width: 1000px;
-        margin: 20px auto;
-        height: 100px;
-        background-color: gray;
-        background-position: center;
-        background-size: cover;
-        text-align: center;
-        border-radius: 10px;
-        padding: 10px;
-    }
+        .search {
+            color: black;
+            width: 1000px;
+            margin: 20px auto;
+            height: 100px;
+            background-color: gray;
+            background-position: center;
+            background-size: cover;
+            text-align: center;
+            border-radius: 10px;
+            padding: 10px;
+        }
 
-    .result-button {
-        color: black;
-        width: 1000px;
-        height: 300px;
-        background-color: white;
-        border-radius: 10px;
-        padding: 10px;
-        margin: auto;
-    }
+        .result-button {
+            color: black;
+            width: 1000px;
+            height: 300px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 10px;
+            margin: auto;
+        }
 
-    .stocklist {
-        float: left;
-        width: 830px;
-        color: black;
-        margin-right: 0px;
-        height: 280px;
-        /*background-position: center;*/
-        /*text-align: left;*/
-        padding: 10px;
-    }
+        .stocklist {
+            float: left;
+            width: 830px;
+            color: black;
+            margin-right: 0px;
+            height: 280px;
+            background-position: center;
+            background-color: white;
+            text-align: left;
+            padding: 10px;
+        }
 
-    .save-delete-button {
-        float: right;
-        width: 100px;
-        height: 300px;
-        padding-bottom: 10px;
-        padding-right: 10px;
-        margin: auto;
+        .save-delete-button {
+            float: right;
+            width: 100px;
+            height: 300px;
+            padding-bottom: 10px;
+            padding-right: 10px;
+            margin: auto;
 
-    }
+        }
 
-    .savebtn {
-        margin-top: 10px;
-        width: 100px;
-        height: 130px;
-        right: 300px;
-    }
+        .savebtn {
+            margin-top: 10px;
+            width: 100px;
+            height: 130px;
+            right: 300px;
+        }
 
-    .deletebtn {
-        margin-top: 10px;
-        width: 100px;
-        height: 130px;
-        right: 300px;
-    }
+        .deletebtn {
+            margin-top: 10px;
+            width: 100px;
+            height: 130px;
+            right: 300px;
+        }
 
-    .mystocklist {
-        color: black;
-        width: 1000px;
-        margin: 20px auto;
-        height: 300px;
-        background-color: lightyellow;
-        background-position: center;
-        background-size: cover;
-        border-radius: 10px;
-        text-align: left;
-        padding: 10px;
-    }
+        .mystocklist {
+            color: black;
+            width: 1000px;
+            margin: 20px auto;
+            height: 300px;
+            background-color: lightyellow;
+            background-position: center;
+            background-size: cover;
+            border-radius: 10px;
+            text-align: left;
+            padding: 10px;
+        }
 
-    .information {
-        color: black;
-        width: 1000px;
-        margin: 20px auto;
-        height: 300px;
-        background-color: lightblue;
-        border-radius: 10px;
-        padding: 10px;
-    }
+        .information {
+            color: black;
+            width: 1000px;
+            margin: 20px auto;
+            height: 300px;
+            background-color: lightblue;
+            border-radius: 10px;
+            padding: 10px;
+        }
 
     .article-box {
         border: 1px solid black;
@@ -151,6 +152,39 @@
         reloadStock()
         showArticles()
     });
+
+    function search() {
+
+        $('#stock-search').load(location.href + ' #stock-search');
+        let stock_name = $('#site-search').val()
+
+        $.ajax({
+            type: "POST",
+            url: "/search",
+            data: {name_give: stock_name},
+            success: function (response) {
+                let search_result = response['result']
+                for (let i = 0; i < search_result.length; i++) {
+                    let date = search_result[i]['Date'];
+                    let name = search_result[i]['Name'];
+                    let price = search_result[i]['Price'];
+                    let change = search_result[i]['Change'];
+                    let range = search_result[i]['Range'];
+
+                    let temp_html = `<tr>
+                                                <th scope="row">${date}</th>
+                                                <td>${name}</td>
+                                                <td>${price}</td>
+                                                <td>${change}</td>
+                                                <td>${range}</td>
+                                            </tr>`
+
+
+                    $('#search-result').append(temp_html)
+                }
+            }
+        })
+    }
 
     function save() {
         $.ajax({
@@ -304,14 +338,27 @@
         <p>
             <label for="site-search">Search the site:</label>
             <input type="search" id="site-search" name="q">
-            <button>Search</button>
+            <button onclick="search()">Search</button>
         </p>
     </div>
     <div class="result-button">
 
-        <div class="stocklist">
-            Search Result
+        <div class="stocklist" id="stock-search">
+            <p>Search Result</p>
+            <table class="table" style="width:100%">
+                <thead>
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Price of the Day</th>
+                    <th scope="col">Change in Price</th>
+                    <th scope="col">%</th>
+                </tr>
 
+                <tbody id="search-result">
+                </tbody>
+                </thead>
+            </table>
         </div>
         <div class="save-delete-button">
 
